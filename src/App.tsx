@@ -1,13 +1,13 @@
 import { ChakraProvider, theme } from "@chakra-ui/react";
 import { Layout } from "./components/layout/Layout";
-// import { SelectionContextProvider } from "./context/SelectionContext";
+import { LocationContextProvider } from "./context/LocationContext";
 
 export const App = () => {
   return (
     <ChakraProvider theme={theme}>
-      {/* <SelectionContextProvider> */}
+      <LocationContextProvider>
         <Layout />
-      {/* </SelectionContextProvider> */}
+      </LocationContextProvider>
     </ChakraProvider>
   );
 };

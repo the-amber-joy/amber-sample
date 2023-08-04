@@ -1,69 +1,88 @@
-// import { SearchIcon } from "@chakra-ui/icons";
-// import {
-//   FormControl,
-//   FormErrorMessage,
-//   HStack,
-//   IconButton,
-//   Input,
-//   Spinner,
-// } from "@chakra-ui/react";
-// import { useState } from "react";
-// import { useSelectionContext } from "../../context/SelectionContext";
-// import { getCurrentIndexByLocation } from "../../api/getUVindex";
+import { SearchIcon } from "@chakra-ui/icons";
+import {
+  FormControl,
+  FormErrorMessage,
+  IconButton,
+  Input,
+  Select,
+  VStack,
+} from "@chakra-ui/react";
+import { useState } from "react";
+import { getLocationByCity } from "../../api/getLocationByCity";
+import { getCurrentIndexByLocation } from "../../api/getUVindex";
+import { useLocationContext } from "../../context/LocationContext";
+import { OptionList } from "./OptionList";
 
 export const SearchComponent = () => {
-  <></>;
-  //   const [searchTerm, setSearchTerm] = useState<string>("");
-  //   const [isInvalid, setIsInvalid] = useState<boolean>(false);
-  //   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { location, updateLocation } = useLocationContext();
 
-  //   const handleSubmit = async () => {
-  //     setIsLoading(true);
+  const [cityName, setCityName] = useState<string>("");
+  const [stateName, setStateName] = useState<string>("");
+  const [isInvalid, setIsInvalid] = useState<boolean>(false);
 
-  //     await getCurrentIndexByLocation(input: QueryParams).then(
-  //       (res: UVIndexResponse) => {
-  //         if (res.status === 404) {
-  //           setIsInvalid(true);
-  //         }
-  //         if (res.status === 200) {
-  // /* put it in context & update display */
-  //         }
-  //       }
-  //     );
-  //   };
+  const handleSubmit = async () => {
+    const query = { city: cityName, state: stateName, country: "US" };
 
-  //   return (
-  //     <form
-  //       onSubmit={(e) => {
-  //         e.preventDefault();
-  //         handleSubmit();
-  //       }}
-  //     >
-  //       <FormControl isInvalid={isInvalid}>
-  //         <HStack w={{ base: "auto", lg: "sm" }}>
-  //           <Input
-  //             placeholder="Search by lat/long"
-  //             onChange={(e) => {
-  //               setIsInvalid(false);
-  //               setSearchTerm(e.currentTarget.value);
-  //             }}
-  //             value={searchTerm}
-  //             errorBorderColor="red"
-  //           />
-  //           <IconButton
-  //             type="submit"
-  //             isDisabled={isLoading || searchTerm === ""}
-  //             aria-label="Search by name"
-  //             icon={isLoading ? <Spinner size="sm" /> : <SearchIcon />}
-  //             onClick={() => {
-  //               handleSubmit();
-  //             }}
-  //           />
-  //         </HStack>
-  //         {isInvalid && (
-  //           <FormErrorMessage>This is not a valid location.</FormErrorMessage>
-  //         )}
-  //       </FormControl>
-  //     </form>
-  //   );
+    await getLocationByCity(query).then((geoResponse: any) => {
+      if (geoResponse.status === 404) {
+        setIsInvalid(true);
+      }
+      if (geoResponse.status === 200) {
+        updateLocation({
+          city: geoResponse.data[0],
+          uvIndexData: { uvCurrent: 0, uvMax: 0, uvMaxTime: "" },
+        });
+
+        getCurrentIndexByLocation({
+          lat: geoResponse.data[0].lat,
+          lng: geoResponse.data[0].lng,
+        }).then((uvResponse) => {
+          if (uvResponse.status === 200) {
+            updateLocation({
+              city: geoResponse.data[0],
+              uvIndexData: uvResponse.data,
+            });
+          }
+        });
+      }
+    });
+  };
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit();
+      }}
+    >
+      <FormControl>
+        <VStack w={{ base: "auto", lg: "sm" }}>
+          <Input
+            placeholder="City"
+            onChange={(e) => {
+              setCityName(e.currentTarget.value);
+            }}
+            value={cityName}
+          />
+          <Select
+            value={stateName}
+            onChange={(e) => {
+              setStateName(e.currentTarget.value);
+            }}
+            placeholder="State"
+          >
+            <OptionList />
+          </Select>
+          <IconButton
+            type="submit"
+            aria-label="Search"
+            icon={<SearchIcon />}
+            onClick={() => {
+              handleSubmit();
+            }}
+          />
+        </VStack>
+      </FormControl>
+    </form>
+  );
 };

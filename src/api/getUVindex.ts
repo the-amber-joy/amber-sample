@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-import { config, url } from "./config";
+import { config, openUvUrl } from "./config";
 
 interface UvApiResponse {
   result: {
@@ -30,7 +30,7 @@ export interface UVIndexResponse extends UVIndexData {
  */
 export async function getCurrentIndex() {
   try {
-    return axios.get(url, config).then(
+    return axios.get(openUvUrl, config).then(
       (response: AxiosResponse<UvApiResponse>) => {
         const { data, status } = response;
         const { result } = data;
@@ -51,8 +51,8 @@ export async function getCurrentIndex() {
 }
 
 export interface QueryParams {
-  lat: number;
-  lng: number;
+  lat: string;
+  lng: string;
 }
 /**
  *
@@ -61,20 +61,25 @@ export interface QueryParams {
  */
 export async function getCurrentIndexByLocation(query: QueryParams) {
   try {
-    return axios.get(url, { ...config, params: query }).then(
-      (response: AxiosResponse<UvApiResponse>) => {
-        const { data, status } = response;
+    return axios
+      .get(openUvUrl, {
+        headers: { "x-access-token": config.headers["x-access-token"] },
+        params: query,
+      })
+      .then(
+        (response: AxiosResponse<UvApiResponse>) => {
+          const { data, status } = response;
 
-        const uvIndexData: UVIndexData = {
-          uvCurrent: data.result.uv,
-          uvMax: data.result.uv_max,
-          uvMaxTime: data.result.uv_max_time,
-        };
+          const uvIndexData: UVIndexData = {
+            uvCurrent: data.result.uv,
+            uvMax: data.result.uv_max,
+            uvMaxTime: data.result.uv_max_time,
+          };
 
-        return { data: uvIndexData, status };
-      },
-      (err) => err.response
-    );
+          return { data: uvIndexData, status };
+        },
+        (err) => err.response
+      );
   } catch (err) {
     console.log("error: ", err);
   }

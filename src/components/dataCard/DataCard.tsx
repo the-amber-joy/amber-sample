@@ -1,3 +1,4 @@
+import { SunIcon } from "@chakra-ui/icons";
 import {
   Card,
   CardBody,
@@ -7,43 +8,13 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { SunIcon } from "@chakra-ui/icons";
-import { useEffect, useState } from "react";
 
-import {
-  UVIndexResponse,
-  getCurrentIndexByLocation,
-} from "../../api/getUVindex";
-import { getIndexColor } from "../../util";
 import dayjs from "dayjs";
-
+import { useLocationContext } from "../../context/LocationContext";
+import { getIndexColor } from "../../util";
 
 export const DataCard = () => {
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [uvMax, setUvMax] = useState<number>(0);
-  const [uvMaxTime, setUvMaxTime] = useState<string>("");
-
-  useEffect(() => {
-    const fetchCurrentData = async () => {
-      await getCurrentIndexByLocation({ lat: 41.87, lng: -87.63 }).then(
-        async (res: UVIndexResponse) => {
-          if (res.status === 404) {
-            console.log(res);
-          }
-          if (res.status === 200) {
-            const { uvCurrent, uvMax, uvMaxTime } = res.data;
-            setCurrentIndex(uvCurrent);
-            setUvMax(uvMax);
-            setUvMaxTime(uvMaxTime);
-          }
-        }
-      );
-    };
-
-    fetchCurrentData();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { location } = useLocationContext();
 
   return (
     <Card w={{ base: "auto", lg: "md" }} minHeight="sm">
@@ -52,16 +23,20 @@ export const DataCard = () => {
       </CardHeader>
       <CardBody>
         <Center>
-          <Center>
-            <SunIcon boxSize="6em" color={getIndexColor(currentIndex)} />
-          </Center>{" "}
+          <SunIcon
+            boxSize="6em"
+            color={getIndexColor(location?.uvIndexData?.uvCurrent)}
+          />
         </Center>
         <Stack mt="6" spacing="3">
-          <Heading size="md">UV Index for Chicago</Heading>
-          <Text>Current UV Index: {currentIndex}</Text>
+          <Heading size="md">
+            UV Index for {location?.city?.name}, {location?.city?.state}
+          </Heading>
+          <Text>Current UV Index: {location?.uvIndexData?.uvCurrent}</Text>
           <Heading size="md">Max Forecast</Heading>
           <Text>
-            UV Index will be {uvMax} at {dayjs(uvMaxTime).format("HH:mm a")}
+            UV Index will be {location?.uvIndexData?.uvMax} at{" "}
+            {dayjs(location?.uvIndexData?.uvMaxTime).format("HH:mm a")}
           </Text>
         </Stack>
       </CardBody>

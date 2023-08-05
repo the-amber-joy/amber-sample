@@ -8,6 +8,7 @@ import {
   Spinner,
   Stack,
   Text,
+  VStack,
 } from "@chakra-ui/react";
 
 import dayjs from "dayjs";
@@ -55,8 +56,10 @@ export const DataCard = () => {
             <CardBody>
               {!isEmpty(riskLevel) && (
                 <Center>
-                  <Heading size="md">Risk Level: {riskLevel.level}</Heading>
-                  <SunIcon boxSize="6em" color={riskLevel.color} />
+                  <VStack>
+                    <Heading size="md">Risk Level: {riskLevel.level}</Heading>
+                    <SunIcon boxSize="6em" color={riskLevel.color} />
+                  </VStack>
                 </Center>
               )}
 

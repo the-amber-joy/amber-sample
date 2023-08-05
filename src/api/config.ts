@@ -1,8 +1,7 @@
 export const config = {
   headers: {
-    "x-access-token": process.env.API_KEY,
-    "X-Api-Key":
-      process.env.API_NINJA_KEY,
+    "x-access-token": process.env.REACT_APP_OPENUV_API_KEY,
+    "X-Api-Key": process.env.REACT_APP_API_NINJA_KEY,
   },
 };
 

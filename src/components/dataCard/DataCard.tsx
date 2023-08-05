@@ -57,7 +57,12 @@ export const DataCard = () => {
               {!isEmpty(riskLevel) && (
                 <Center>
                   <VStack>
-                    <Heading size="md">Risk Level: {riskLevel.level}</Heading>
+                    <Heading size="md">
+                      Risk Level:{" "}
+                      <span style={{ color: riskLevel.color }}>
+                        {riskLevel.level}
+                      </span>
+                    </Heading>
                     <SunIcon boxSize="6em" color={riskLevel.color} />
                   </VStack>
                 </Center>

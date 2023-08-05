@@ -31,22 +31,21 @@ export async function getLocationByCity(query: CityQueryParams) {
   try {
     return axios
       .get(geocodeUrl, {
-        headers: { "X-Api-Key": "zzlMvGjana5iDiZztIJGAA==q23zJW7Kg6gF7uGu" },
+        headers: { "X-Api-Key": config.headers["X-Api-Key"] },
         params: query,
       })
       .then(
         (response: AxiosResponse<GeocodeApiResponse>) => {
-          console.log("response", response);
           const { data, status } = response;
 
-          const foo = map(data, (item) => ({
+          const cityData = map(data, (item) => ({
             name: item.name,
             state: item.state,
             lat: parseFloat(item.latitude).toFixed(2),
             lng: parseFloat(item.longitude).toFixed(2),
           }));
 
-          return { data: foo, status };
+          return { data: cityData, status };
         },
         (err) => err.response
       );

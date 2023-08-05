@@ -5,6 +5,6 @@ import { DataCard } from "./DataCard";
 
 it("renders IndexCard", () => {
   render(<DataCard />);
-  const el = screen.getByText("Today's UV Index");
+  const el = screen.getByTestId("weather-card");
   expect(el).toBeInTheDocument();
 });

@@ -5,6 +5,7 @@ import {
   CardHeader,
   Center,
   Heading,
+  Spinner,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -12,34 +13,54 @@ import {
 import dayjs from "dayjs";
 import { useLocationContext } from "../../context/LocationContext";
 import { getIndexColor } from "../../util";
+import { useWeatherContext } from "../../context/WeatherContext";
+import { useLoadingContext } from "../../context/LoadingContext";
+import { isEmpty } from "lodash";
 
 export const DataCard = () => {
   const { location } = useLocationContext();
+  const { weather } = useWeatherContext();
+  const { isLoading } = useLoadingContext();
 
   return (
-    <Card w={{ base: "auto", lg: "md" }} minHeight="sm">
-      <CardHeader>
-        <Heading size="md">Today's UV Index</Heading>
-      </CardHeader>
-      <CardBody>
-        <Center>
-          <SunIcon
-            boxSize="6em"
-            color={getIndexColor(location?.uvIndexData?.uvCurrent)}
-          />
-        </Center>
-        <Stack mt="6" spacing="3">
-          <Heading size="md">
-            UV Index for {location?.city?.name}, {location?.city?.state}
-          </Heading>
-          <Text>Current UV Index: {location?.uvIndexData?.uvCurrent}</Text>
-          <Heading size="md">Max Forecast</Heading>
-          <Text>
-            UV Index will be {location?.uvIndexData?.uvMax} at{" "}
-            {dayjs(location?.uvIndexData?.uvMaxTime).format("HH:mm a")}
-          </Text>
-        </Stack>
-      </CardBody>
+    <Card w={{ base: "auto", lg: "md" }} minHeight="sm" data-testid="weather-card">
+      {isLoading && (
+        <CardBody>
+          <Center>
+            <Spinner size="xl" />
+          </Center>
+        </CardBody>
+      )}
+      {!isLoading && (
+        <>
+          {!isEmpty(location) && (
+            <CardHeader>
+              <Heading size="md">
+                Today's UV Index for {location?.name}, {location?.state}
+              </Heading>
+            </CardHeader>
+          )}
+          {!isEmpty(weather) && (
+            <CardBody>
+              <Center>
+                <SunIcon
+                  boxSize="6em"
+                  color={getIndexColor(weather?.uvCurrent)}
+                />
+              </Center>
+              <Stack mt="6" spacing="3">
+                <Heading size="md">Current:</Heading>
+                <Text>{weather?.uvCurrent}</Text>
+                <Heading size="md">Max Forecast:</Heading>
+                <Text>
+                  UV Index will be {weather?.uvMax} at{" "}
+                  {dayjs(weather?.uvMaxTime).format("h:mm a")}
+                </Text>
+              </Stack>
+            </CardBody>
+          )}
+        </>
+      )}
     </Card>
   );
 };

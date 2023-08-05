@@ -7,7 +7,6 @@ enum RISK_LEVEL {
 }
 
 export const getIndexColor = (currentIndex: number) => {
-
   if (currentIndex < 3) {
     return RISK_LEVEL.LOW;
   }

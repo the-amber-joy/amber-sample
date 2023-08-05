@@ -1,14 +1,9 @@
 import { createContext, useContext, useState } from "react";
 import { CityState } from "../types/CityState";
-import { UVIndexData } from "../api/getUVindex";
 
-interface LocationType {
-  city: CityState | null;
-  uvIndexData: UVIndexData;
-}
 interface LocationContextType {
-  location: LocationType,
-  updateLocation: (newLocation: LocationType) => void;
+  location: CityState;
+  updateLocation: (newLocation: CityState) => void;
 }
 
 export const LocationContext = createContext<LocationContextType>(
@@ -30,9 +25,9 @@ export const LocationContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [state, setState] = useState<LocationType>({} as LocationType);
+  const [state, setState] = useState<CityState>({} as CityState);
 
-  const updateLocation = (newState: LocationType) => {
+  const updateLocation = (newState: CityState) => {
     setState(newState);
   };
 

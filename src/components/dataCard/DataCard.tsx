@@ -11,19 +11,30 @@ import {
 } from "@chakra-ui/react";
 
 import dayjs from "dayjs";
-import { useLocationContext } from "../../context/LocationContext";
-import { getIndexColor } from "../../util";
-import { useWeatherContext } from "../../context/WeatherContext";
-import { useLoadingContext } from "../../context/LoadingContext";
 import { isEmpty } from "lodash";
+import { useLoadingContext } from "../../context/LoadingContext";
+import { useLocationContext } from "../../context/LocationContext";
+import { useWeatherContext } from "../../context/WeatherContext";
+import { RiskLevel, getRiskLevel } from "../../util";
+import { useEffect, useState } from "react";
 
 export const DataCard = () => {
   const { location } = useLocationContext();
   const { weather } = useWeatherContext();
   const { isLoading } = useLoadingContext();
+  const [riskLevel, setRiskLevel] = useState<RiskLevel>({} as RiskLevel);
+
+  useEffect(() => {
+    const risk = getRiskLevel(weather?.uvCurrent) as RiskLevel;
+    setRiskLevel(risk);
+  }, [weather]);
 
   return (
-    <Card w={{ base: "auto", lg: "md" }} minHeight="sm" data-testid="weather-card">
+    <Card
+      w={{ base: "auto", lg: "md" }}
+      minHeight="sm"
+      data-testid="weather-card"
+    >
       {isLoading && (
         <CardBody>
           <Center>
@@ -42,12 +53,13 @@ export const DataCard = () => {
           )}
           {!isEmpty(weather) && (
             <CardBody>
-              <Center>
-                <SunIcon
-                  boxSize="6em"
-                  color={getIndexColor(weather?.uvCurrent)}
-                />
-              </Center>
+              {!isEmpty(riskLevel) && (
+                <Center>
+                  <Heading size="md">Risk Level: {riskLevel.level}</Heading>
+                  <SunIcon boxSize="6em" color={riskLevel.color} />
+                </Center>
+              )}
+
               <Stack mt="6" spacing="3">
                 <Heading size="md">Current:</Heading>
                 <Text>{weather?.uvCurrent}</Text>

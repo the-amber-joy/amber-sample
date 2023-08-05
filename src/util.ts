@@ -1,29 +1,43 @@
-enum RISK_LEVEL {
-  LOW = "#558B2F",
-  MODERATE = "#F9A825",
-  HIGH = "#EF6C00",
-  VERY_HIGH = "#B71C1C",
-  EXTREME = "#6A1B9A",
+export interface RiskLevel {
+  level: RISK_LEVEL;
+  color: string;
 }
 
-export const getIndexColor = (currentIndex: number) => {
+enum RISK_LEVEL {
+  LOW = "Low",
+  MODERATE = "Moderate",
+  HIGH = "High",
+  VERY_HIGH = "Very High",
+  EXTREME = "Extreme",
+}
+
+const RISK_LEVELS = {
+  LOW: { level: RISK_LEVEL.LOW, color: "#558B2F" },
+  MODERATE: { level: RISK_LEVEL.MODERATE, color: "#F9A825" },
+  HIGH: { level: RISK_LEVEL.HIGH, color: "#EF6C00" },
+  VERY_HIGH: { level: RISK_LEVEL.VERY_HIGH, color: "#B71C1C" },
+  EXTREME: { level: RISK_LEVEL.EXTREME, color: "#6A1B9A" },
+};
+
+export const getRiskLevel = (currentIndex: number) => {
   if (currentIndex < 3) {
-    return RISK_LEVEL.LOW;
+    return RISK_LEVELS.LOW;
   }
 
   if (currentIndex >= 3 && currentIndex < 6) {
-    return RISK_LEVEL.MODERATE;
+    return RISK_LEVELS.MODERATE;
   }
 
   if (currentIndex >= 6 && currentIndex < 8) {
-    return RISK_LEVEL.HIGH;
+    return RISK_LEVELS.HIGH;
   }
 
   if (currentIndex >= 8 && currentIndex < 11) {
-    return RISK_LEVEL.VERY_HIGH;
+    return RISK_LEVELS.VERY_HIGH;
   }
 
   if (currentIndex >= 0) {
-    return RISK_LEVEL.EXTREME;
+    return RISK_LEVELS.EXTREME;
   }
+  return {};
 };

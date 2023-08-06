@@ -2,6 +2,7 @@ import { Box, Flex, Stack } from "@chakra-ui/react";
 import { ColorModeSwitcher } from "../../ColorModeSwitcher";
 import { DataCard } from "../dataCard/DataCard";
 import { SearchComponent } from "../search/SearchComponent";
+import { LegendComponent } from "../legendComponent/LegendComponent";
 
 export const Layout = () => (
   <Box textAlign="center" fontSize="xl">
@@ -14,6 +15,7 @@ export const Layout = () => (
       >
         <SearchComponent />
         <DataCard />
+        <LegendComponent />
       </Stack>
     </Flex>
   </Box>

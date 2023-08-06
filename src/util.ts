@@ -5,6 +5,7 @@ export interface RiskLevel {
 }
 
 enum RISK_LEVEL {
+  UNKNOWN = "Unknown",
   LOW = "Low",
   MODERATE = "Moderate",
   HIGH = "High",
@@ -13,6 +14,7 @@ enum RISK_LEVEL {
 }
 
 export const RISK_LEVELS = {
+  UNKNOWN: { level: RISK_LEVEL.UNKNOWN, color: "gray", fontColor: "" },
   LOW: { level: RISK_LEVEL.LOW, color: "#558B2F", fontColor: "" },
   MODERATE: {
     level: RISK_LEVEL.MODERATE,
@@ -25,8 +27,8 @@ export const RISK_LEVELS = {
 };
 
 /**
- * 
- * @param {number} currentIndex 
+ *
+ * @param {number} currentIndex
  * @returns {RiskLevel} RiskLevel - the current risk level based on the UV index
  */
 export const getRiskLevel = (currentIndex: number) => {
@@ -49,5 +51,6 @@ export const getRiskLevel = (currentIndex: number) => {
   if (currentIndex >= 0) {
     return RISK_LEVELS.EXTREME;
   }
-  return {};
+  
+  return RISK_LEVELS.UNKNOWN;
 };

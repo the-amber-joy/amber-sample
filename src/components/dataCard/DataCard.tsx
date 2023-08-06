@@ -7,6 +7,7 @@ import {
   Heading,
   Spinner,
   Stack,
+  Tag,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -29,6 +30,15 @@ export const DataCard = () => {
     const risk = getRiskLevel(weather?.uvCurrent) as RiskLevel;
     setRiskLevel(risk);
   }, [weather]);
+
+  const max = () => {
+    const maxRisk: RiskLevel = getRiskLevel(weather?.uvMax);
+    return (
+      <Tag bgColor={maxRisk.color} color={maxRisk.fontColor}>
+        {maxRisk.level}
+      </Tag>
+    );
+  };
 
   return (
     <Card
@@ -73,7 +83,7 @@ export const DataCard = () => {
                 <Text>{weather?.uvCurrent}</Text>
                 <Heading size="md">Max Forecast:</Heading>
                 <Text>
-                  UV Index will be {weather?.uvMax} at{" "}
+                  UV Index will be {weather?.uvMax} ({max()}) at{" "}
                   {dayjs(weather?.uvMaxTime).format("h:mm a")}
                 </Text>
               </Stack>

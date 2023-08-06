@@ -1,5 +1,5 @@
 ## About
-I was asked to use the free `openuv` API to get UV Index data and display it however I wanted on the UI. To save time, I used an app I'd built the previous day as boilerplate (this was allowed), and hard-coded lat/long for Chicago (also allowed). Since then, I have created a separate branch where the user can enter their own city/state (I used the `api-ninjas` API to get lat/long data based on city/state provided)
+I was asked to use the free `openuv` API to get UV Index data and display it however I wanted on the UI. To save time, I used an [app I'd built the previous day](https://github.com/the-amber-joy/lookit-these-critters) as boilerplate (this was allowed), and originally hard-coded lat/long for Chicago (also allowed). Since then, I added search functionality where the user can enter their own US-only city/state (I used the `api-ninjas` API to get lat/long data based on city/state provided)
 
 As a bonus, I used these pre-defined colors I was given to represent UV Index Risk Levels:
 ```

@@ -79,11 +79,12 @@ export const DataCard = () => {
               )}
 
               <Stack mt="6" spacing="3">
-                <Heading size="md">Current:</Heading>
-                <Text>{weather?.uvCurrent}</Text>
-                <Heading size="md">Max Forecast:</Heading>
+                <Heading size="md">
+                  Current UV Index: <Text>{weather?.uvCurrent}</Text>
+                </Heading>
+                <Heading size="md">Max UV for Today:</Heading>
                 <Text>
-                  UV Index will be {max()} ({weather?.uvMax}) at{" "}
+                  Risk Level {max()} ({weather?.uvMax}) at{" "}
                   {dayjs(weather?.uvMaxTime).format("h:mm a")}
                 </Text>
               </Stack>

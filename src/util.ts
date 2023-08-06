@@ -27,7 +27,7 @@ export const RISK_LEVELS = {
 /**
  * 
  * @param {number} currentIndex 
- * @returns {RiskLevel} - the current risk level based on the UV index
+ * @returns {RiskLevel} RiskLevel - the current risk level based on the UV index
  */
 export const getRiskLevel = (currentIndex: number) => {
   if (currentIndex < 3) {

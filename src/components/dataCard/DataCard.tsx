@@ -79,9 +79,8 @@ export const DataCard = () => {
               )}
 
               <Stack mt="6" spacing="3">
-                <Heading size="md">
-                  Current UV Index: <Text>{weather?.uvCurrent}</Text>
-                </Heading>
+                <Heading size="md">Current UV Index:</Heading>
+                <Text>{weather?.uvCurrent}</Text>
                 <Heading size="md">Max UV for Today:</Heading>
                 <Text>
                   Risk Level {max()} ({weather?.uvMax}) at{" "}

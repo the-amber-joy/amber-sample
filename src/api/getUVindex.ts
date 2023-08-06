@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-import { config, url } from "./config";
+import { config, openUvUrl } from "./config";
 
 interface UvApiResponse {
   result: {
@@ -12,47 +12,21 @@ interface UvApiResponse {
     ozone_time: string;
   };
 }
-export interface UVIndexData {
+export interface UVIndexType {
   uvCurrent: number;
   // uv_time: string;
   uvMax: number;
   uvMaxTime: string;
 }
 
-export interface UVIndexResponse extends UVIndexData {
-  data: UVIndexData;
+export interface UVIndexResponse extends UVIndexType {
+  data: UVIndexType;
   status: number;
 }
 
-/**
- *
- * @returns {UVIndexResponse}
- */
-export async function getCurrentIndex() {
-  try {
-    return axios.get(url, config).then(
-      (response: AxiosResponse<UvApiResponse>) => {
-        const { data, status } = response;
-        const { result } = data;
-
-        const uvIndexData: UVIndexData = {
-          uvCurrent: result.uv,
-          uvMax: result.uv_max,
-          uvMaxTime: result.uv_max_time,
-        };
-
-        return { data: uvIndexData, status };
-      },
-      (err) => err.response
-    );
-  } catch (err) {
-    console.log("error: ", err);
-  }
-}
-
 export interface QueryParams {
-  lat: number;
-  lng: number;
+  lat: string;
+  lng: string;
 }
 /**
  *
@@ -61,20 +35,25 @@ export interface QueryParams {
  */
 export async function getCurrentIndexByLocation(query: QueryParams) {
   try {
-    return axios.get(url, { ...config, params: query }).then(
-      (response: AxiosResponse<UvApiResponse>) => {
-        const { data, status } = response;
+    return axios
+      .get(openUvUrl, {
+        headers: { "x-access-token": config.headers["x-access-token"] },
+        params: query,
+      })
+      .then(
+        (response: AxiosResponse<UvApiResponse>) => {
+          const { data, status } = response;
 
-        const uvIndexData: UVIndexData = {
-          uvCurrent: data.result.uv,
-          uvMax: data.result.uv_max,
-          uvMaxTime: data.result.uv_max_time,
-        };
+          const uvIndexData: UVIndexType = {
+            uvCurrent: data.result.uv,
+            uvMax: data.result.uv_max,
+            uvMaxTime: data.result.uv_max_time,
+          };
 
-        return { data: uvIndexData, status };
-      },
-      (err) => err.response
-    );
+          return { data: uvIndexData, status };
+        },
+        (err) => err.response
+      );
   } catch (err) {
     console.log("error: ", err);
   }

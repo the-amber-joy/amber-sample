@@ -1,69 +1,113 @@
-// import { SearchIcon } from "@chakra-ui/icons";
-// import {
-//   FormControl,
-//   FormErrorMessage,
-//   HStack,
-//   IconButton,
-//   Input,
-//   Spinner,
-// } from "@chakra-ui/react";
-// import { useState } from "react";
-// import { useSelectionContext } from "../../context/SelectionContext";
-// import { getCurrentIndexByLocation } from "../../api/getUVindex";
+import { SearchIcon } from "@chakra-ui/icons";
+import {
+  CloseButton,
+  FormControl,
+  FormErrorMessage,
+  IconButton,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Select,
+  Spinner,
+  VStack,
+} from "@chakra-ui/react";
+import { useState } from "react";
+import { getLocationByCity } from "../../api/getLocationByCity";
+import { getCurrentIndexByLocation } from "../../api/getUVindex";
+import { useLoadingContext } from "../../context/LoadingContext";
+import { useLocationContext } from "../../context/LocationContext";
+import { useWeatherContext } from "../../context/WeatherContext";
+import { OptionList } from "./OptionList";
+import { isEmpty } from "lodash";
 
 export const SearchComponent = () => {
-  <></>;
-  //   const [searchTerm, setSearchTerm] = useState<string>("");
-  //   const [isInvalid, setIsInvalid] = useState<boolean>(false);
-  //   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { updateLocation } = useLocationContext();
+  const { updateWeather } = useWeatherContext();
+  const { isLoading, updateLoading } = useLoadingContext();
 
-  //   const handleSubmit = async () => {
-  //     setIsLoading(true);
+  const [cityName, setCityName] = useState<string>("");
+  const [stateName, setStateName] = useState<string>("");
+  const [isInvalid, setIsInvalid] = useState<boolean>(false);
 
-  //     await getCurrentIndexByLocation(input: QueryParams).then(
-  //       (res: UVIndexResponse) => {
-  //         if (res.status === 404) {
-  //           setIsInvalid(true);
-  //         }
-  //         if (res.status === 200) {
-  // /* put it in context & update display */
-  //         }
-  //       }
-  //     );
-  //   };
+  const handleSubmit = async () => {
+    updateLoading(true);
+    const query = { city: cityName, state: stateName, country: "US" };
 
-  //   return (
-  //     <form
-  //       onSubmit={(e) => {
-  //         e.preventDefault();
-  //         handleSubmit();
-  //       }}
-  //     >
-  //       <FormControl isInvalid={isInvalid}>
-  //         <HStack w={{ base: "auto", lg: "sm" }}>
-  //           <Input
-  //             placeholder="Search by lat/long"
-  //             onChange={(e) => {
-  //               setIsInvalid(false);
-  //               setSearchTerm(e.currentTarget.value);
-  //             }}
-  //             value={searchTerm}
-  //             errorBorderColor="red"
-  //           />
-  //           <IconButton
-  //             type="submit"
-  //             isDisabled={isLoading || searchTerm === ""}
-  //             aria-label="Search by name"
-  //             icon={isLoading ? <Spinner size="sm" /> : <SearchIcon />}
-  //             onClick={() => {
-  //               handleSubmit();
-  //             }}
-  //           />
-  //         </HStack>
-  //         {isInvalid && (
-  //           <FormErrorMessage>This is not a valid location.</FormErrorMessage>
-  //         )}
-  //       </FormControl>
-  //     </form>
-  //   );
+    await getLocationByCity(query).then((geoResponse: any) => {
+      if (isEmpty(geoResponse.data)) {
+        setIsInvalid(true);
+        updateLoading(false);
+      }
+      if (!isEmpty(geoResponse.data)) {
+        updateLocation(geoResponse.data[0]);
+
+        getCurrentIndexByLocation({
+          lat: geoResponse.data[0].lat,
+          lng: geoResponse.data[0].lng,
+        })
+          .then((uvResponse) => {
+            if (uvResponse.status === 200) {
+              updateWeather(uvResponse.data);
+            }
+          })
+          .finally(() => updateLoading(false));
+      }
+    });
+  };
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit();
+      }}
+    >
+      <FormControl isInvalid={isInvalid}>
+        <VStack w={{ base: "auto", lg: "sm" }}>
+          <InputGroup>
+            <Input
+              placeholder="City"
+              onChange={(e) => {
+                setIsInvalid(false);
+                setCityName(e.currentTarget.value);
+              }}
+              value={cityName}
+              isDisabled={isLoading}
+            />
+            {cityName !== "" && (
+              <InputRightElement>
+                <CloseButton
+                  aria-label="Clear Search Input"
+                  onClick={() => {
+                    setIsInvalid(false);
+                    setCityName("");
+                  }}
+                />
+              </InputRightElement>
+            )}
+          </InputGroup>
+          <Select
+            value={stateName}
+            onChange={(e) => {
+              setStateName(e.currentTarget.value);
+            }}
+            placeholder="Select a state..."
+            isDisabled={isLoading || cityName === ""}
+          >
+            <OptionList />
+          </Select>
+          {isInvalid && <FormErrorMessage>No city with this name in {stateName}.</FormErrorMessage>}
+          <IconButton
+            type="submit"
+            aria-label="Search"
+            icon={isLoading ? <Spinner size="sm" /> : <SearchIcon />}
+            onClick={() => {
+              handleSubmit();
+            }}
+            isDisabled={isLoading || cityName === "" || stateName === ""}
+          />
+        </VStack>
+      </FormControl>
+    </form>
+  );
 };

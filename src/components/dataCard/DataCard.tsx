@@ -34,7 +34,7 @@ export const DataCard = () => {
   const max = () => {
     const maxRisk: RiskLevel = getRiskLevel(weather?.uvMax);
     return (
-      <Tag bgColor={maxRisk.color} color={maxRisk.fontColor}>
+      <Tag marginTop=".25rem" bgColor={maxRisk.color} color={maxRisk.fontColor}>
         {maxRisk.level}
       </Tag>
     );
@@ -83,7 +83,7 @@ export const DataCard = () => {
                 <Text>{weather?.uvCurrent}</Text>
                 <Heading size="md">Max Forecast:</Heading>
                 <Text>
-                  UV Index will be {weather?.uvMax} ({max()}) at{" "}
+                  UV Index will be {max()} ({weather?.uvMax}) at{" "}
                   {dayjs(weather?.uvMaxTime).format("h:mm a")}
                 </Text>
               </Stack>

@@ -13,9 +13,9 @@ As a bonus, I used these pre-defined colors I was given to represent UV Index Ri
 ```
 
 ## View
-Original deployment is at https://amber-sample.vercel.app/ - this is what was submitted during the interview.
+Deployed at https://amber-sample.vercel.app/. 
 
-My branch with city/state search, and a few other little tweaks I did for fun, is at https://amber-sample-git-add-search-the-amber-joy.vercel.app/.
+Everything BEFORE [the add-search PR](https://github.com/the-amber-joy/amber-sample/pull/1) is what I built/submitted during the interview.
 
 ## Important Note
-The API key for openuv is limited to 50 calls per day so this won't work if it gets used a lot! I'm probably going to change over to my openweathermap API key instead since it allows 1000 calls per day.
+My API key for openuv is limited to 50 calls per day, so this won't work if it gets used a lot! I'm probably going to change over to my openweathermap API key instead since it allows 1000 calls per day.

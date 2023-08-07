@@ -1,5 +1,11 @@
 import { createContext, useContext, useState } from "react";
-import { CityState } from "../types/CityState";
+
+export interface CityState {
+  name: string;
+  state: string;
+  latitude: number;
+  longitude: number;
+}
 
 interface LocationContextType {
   location: CityState;

@@ -33,26 +33,26 @@ export const SearchComponent = () => {
     updateLoading(true);
     const query = { city: cityName, state: stateName, country: "US" };
 
-    await getLocationByCity(query).then((geoResponse: any) => {
-      if (isEmpty(geoResponse.data)) {
-        setIsInvalid(true);
-        updateLoading(false);
-      }
-      if (!isEmpty(geoResponse.data)) {
-        updateLocation(geoResponse.data[0]);
+    await getLocationByCity(query)
+      .then((geoResponse: any) => {
+        if (isEmpty(geoResponse.data)) {
+          setIsInvalid(true);
+          updateLoading(false);
+        }
+        if (!isEmpty(geoResponse.data)) {
+          updateLocation(geoResponse.data[0]);
 
-        getCurrentIndexByLocation({
-          lat: geoResponse.data[0].lat,
-          lng: geoResponse.data[0].lng,
-        })
-          .then((uvResponse) => {
+          getCurrentIndexByLocation({
+            lat: geoResponse.data[0].lat,
+            lng: geoResponse.data[0].lng,
+          }).then((uvResponse) => {
             if (uvResponse.status === 200) {
               updateWeather(uvResponse.data);
             }
-          })
-          .finally(() => updateLoading(false));
-      }
-    });
+          });
+        }
+      })
+      .finally(() => updateLoading(false));
   };
 
   return (

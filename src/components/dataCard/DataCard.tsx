@@ -14,11 +14,11 @@ import {
 
 import dayjs from "dayjs";
 import { isEmpty } from "lodash";
+import { useEffect, useState } from "react";
 import { useLoadingContext } from "../../context/LoadingContext";
 import { useLocationContext } from "../../context/LocationContext";
 import { useWeatherContext } from "../../context/WeatherContext";
 import { RiskLevel, getRiskLevel } from "../../util";
-import { useEffect, useState } from "react";
 
 export const DataCard = () => {
   const { location } = useLocationContext();
@@ -35,7 +35,7 @@ export const DataCard = () => {
     const maxRisk: RiskLevel = getRiskLevel(weather?.uvMax);
     return (
       <Tag marginTop=".25rem" bgColor={maxRisk.color} color={maxRisk.fontColor}>
-        {maxRisk.level}
+        {maxRisk.levelName}
       </Tag>
     );
   };
@@ -70,7 +70,7 @@ export const DataCard = () => {
                     <Heading size="md">
                       Risk Level:{" "}
                       <span style={{ color: riskLevel.color }}>
-                        {riskLevel.level}
+                        {riskLevel.levelName}
                       </span>
                     </Heading>
                     <SunIcon boxSize="6em" color={riskLevel.color} />

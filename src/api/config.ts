@@ -10,3 +10,6 @@ export const openUvUrl =
 export const geocodeUrl =
   process.env.REACT_APP_API_NINJA_GEOCODE_URL ??
   "https://api.api-ninjas.com/v1/geocoding";
+export const reverseGeocodeUrl =
+  process.env.REACT_APP_API_NINJA_REVERSE_GEOCODE_URL ??
+  "https://api.api-ninjas.com/v1/reversegeocoding";

@@ -11,14 +11,16 @@ import {
   Spinner,
   VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { isEmpty } from "lodash";
+import { useEffect, useState } from "react";
+
+import { getCityByGeocode } from "../../api/getCityByGeocode";
 import { getLocationByCity } from "../../api/getLocationByCity";
 import { getCurrentIndexByLocation } from "../../api/getUVindex";
 import { useLoadingContext } from "../../context/LoadingContext";
 import { useLocationContext } from "../../context/LocationContext";
 import { useWeatherContext } from "../../context/WeatherContext";
 import { OptionList } from "./OptionList";
-import { isEmpty } from "lodash";
 
 export const SearchComponent = () => {
   const { updateLocation } = useLocationContext();
@@ -54,6 +56,31 @@ export const SearchComponent = () => {
       })
       .finally(() => updateLoading(false));
   };
+
+  const getPosition = async (position: any) => {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+
+    await getCityByGeocode({ lat, lon }).then((res) => {
+      updateLocation(res.data[0]);
+
+      getCurrentIndexByLocation({
+        lat,
+        lng: lon,
+      }).then((uvResponse) => {
+        if (uvResponse.status === 200) {
+          updateWeather(uvResponse.data);
+        }
+      });
+    });
+  };
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(getPosition);
+    } else {
+      console.log("Geolocation not supported");
+    }
+  }, []);
 
   return (
     <form
@@ -96,7 +123,11 @@ export const SearchComponent = () => {
           >
             <OptionList />
           </Select>
-          {isInvalid && <FormErrorMessage>No city with this name in {stateName}.</FormErrorMessage>}
+          {isInvalid && (
+            <FormErrorMessage>
+              No city with this name in {stateName}.
+            </FormErrorMessage>
+          )}
           <IconButton
             type="submit"
             aria-label="Search"
